@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Text;
 
 using static Lab4.TaskHelper;
@@ -366,9 +367,9 @@ public static class Tasks
 
         var result = action switch
         {
-            1 => a.Union(b),
-            2 => a.Intersect(b),
-            3 => a.Except(b),
+            1 => a.Union(b).ToImmutableSortedSet(),
+            2 => a.Intersect(b).ToImmutableSortedSet(),
+            3 => a.Except(b).ToImmutableSortedSet(),
             _ => throw new Exception("Unreachable"),
         };
 

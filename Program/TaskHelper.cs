@@ -140,7 +140,7 @@ public static class TaskHelper
 
     public static int ValidateTask6Action(string input) => int.Parse(input) switch
     {
-        var action when action is (1 | 2 | 3) => action,
+        var action when action is (1 or 2 or 3) => action,
         var action => throw new FormatException($"Unknown action number: {action}")
     };
 }
