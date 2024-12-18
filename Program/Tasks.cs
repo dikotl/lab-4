@@ -3,6 +3,8 @@ using System.Text;
 
 using static Lab4.TaskHelper;
 
+using Arrival = (int time, int building, int exitOrder);
+
 namespace Lab4;
 
 public static class Tasks
@@ -19,7 +21,7 @@ public static class Tasks
             5. Additional 4 (binary search)
             6. Additional 5 (union, intersection, difference)
             7. Additional 6 (shared elements in arrays)
-            8. Additional 7
+            8. Additional 7 (students arrival time calculator)
         """);
 
         while (true) try
@@ -417,5 +419,36 @@ public static class Tasks
 
     private static void Task8()
     {
+        static void ProcessArrivals(Arrival[] arrivals, int[] pointsInTime, int building, int timeOffset, int indexOffset)
+        {
+            for (int i = 0; i < pointsInTime.Length; i++)
+            {
+                arrivals[indexOffset + i] = (
+                    time: pointsInTime[i] + timeOffset,
+                    building: building,
+                    exitOrder: i + 1
+                );
+            }
+        }
+
+        var timeOffset1 = ConsoleUtil.Request<int>(message: "Time from first building", inline: true);
+        var pointsInTime1 = ConsoleUtil.RequestArray<int>(RandomIntAction());
+
+        var timeOffset2 = ConsoleUtil.Request<int>(message: "Time from second building", inline: true);
+        var pointsInTime2 = ConsoleUtil.RequestArray<int>(RandomIntAction());
+
+        var arrivals = new Arrival[pointsInTime1.Length + pointsInTime2.Length];
+        ProcessArrivals(arrivals, pointsInTime1, 1, timeOffset1, 0);
+        ProcessArrivals(arrivals, pointsInTime2, 2, timeOffset2, pointsInTime1.Length);
+
+        // Comparison is fine
+        BubbleSort(arrivals);
+
+        Console.WriteLine("Arrivals:");
+
+        foreach (var (time, building, exitOrder) in arrivals)
+        {
+            Console.WriteLine($"  Arrival time: at {time} from building number {building}, {exitOrder} in order");
+        }
     }
 }
