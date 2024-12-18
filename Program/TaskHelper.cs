@@ -129,15 +129,6 @@ public static class TaskHelper
         return ResizeArray(difference, k);
     }
 
-    public static (int, int) ReadPair(string input)
-    {
-        return Array.ConvertAll(input.Split(), int.Parse) switch
-        {
-            [var n, var m] => (n, m),
-            _ => throw new FormatException("Invalid arguments")
-        };
-    }
-
     public static int ValidateTask6Action(string input) => int.Parse(input) switch
     {
         var action when action is (1 or 2 or 3) => action,

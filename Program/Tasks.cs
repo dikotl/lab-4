@@ -378,7 +378,7 @@ public static class Tasks
 
     private static void Task7()
     {
-        var (n, m) = ConsoleUtil.Request(ReadPair, message: "Number of arrays", inline: true);
+        var n = ConsoleUtil.Request<int>(message: "Number of arrays", inline: true);
         var a = new int[n][];
 
         for (var i = 0; i < a.Length; ++i)
@@ -399,7 +399,7 @@ public static class Tasks
 
     private static void Task7Advanced()
     {
-        var (n, m) = ConsoleUtil.Request(ReadPair, message: "Number of arrays", inline: true);
+        var n = ConsoleUtil.Request<int>(message: "Number of arrays", inline: true);
         var a = new int[n][];
 
         for (var i = 0; i < a.Length; ++i)
