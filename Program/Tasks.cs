@@ -1,5 +1,7 @@
 using System.Text;
 
+using static Lab4.TaskHelper;
+
 namespace Lab4;
 
 public static class Tasks
@@ -10,12 +12,12 @@ public static class Tasks
         Console.WriteLine("""
         Available tasks:
             1. Main task (square negative numbers and find 2 max elements)
-            2. Additional 1 (find K-th decreasing element in the sequence)
+            2. Additional 1 (K-th decreasing element in the sequence)
             3. Additional 2 (guess the number)
-            4. Additional 3
-            5. Additional 4
-            6. Additional 5
-            7. Additional 6
+            4. Additional 3 (indices of sorted array elements)
+            5. Additional 4 (binary search)
+            6. Additional 5 (union, intersection, difference)
+            7. Additional 6 (shared elements in arrays)
             8. Additional 7
         """);
 
@@ -28,8 +30,8 @@ public static class Tasks
                     3 => Task3,
                     4 => Task4,
                     5 => Task5,
-                    6 => Task6,
-                    7 => Task7,
+                    6 => UseStd() ? Task6Advanced : Task6,
+                    7 => UseStd() ? Task7Advanced : Task7,
                     8 => Task8,
                     var task => throw new ArgumentException($"Unknown task: {task}"),
                 };
@@ -296,33 +298,123 @@ public static class Tasks
         var b = ConsoleUtil.RequestArray(RandomIntAction());
 
         BubbleSort(a);
+        Console.WriteLine($"Sorted array: {string.Join(' ', a)}");
+
+        foreach (var x in b)
+        {
+            var present = false;
+
+            for (var i = 0; i < a.Length && !present; ++i)
+            {
+                var j = i;
+
+                while (j < a.Length && x == a[j]) ++j;
+
+                if (present = j > i)
+                {
+                    Console.WriteLine($"{i + 1} {j}");
+                }
+            }
+
+            if (!present)
+            {
+                Console.WriteLine("0");
+            }
+        }
     }
 
     private static void Task6()
     {
+        var action = ConsoleUtil.Request<int>(ValidateTask6Action, message: """
+        Select action:
+            1 - Union
+            2 - Intersection
+            3 - Difference
+        """);
+
+        Console.WriteLine("Input first set\n> ");
+        var a = ConsoleUtil.ReadArrayOneLine<int>();
+
+        Console.WriteLine("Input first set\n> ");
+        var b = ConsoleUtil.ReadArrayOneLine<int>();
+
+        var result = action switch
+        {
+            1 => Union(a, b),
+            2 => Intersection(a, b),
+            3 => Difference(a, b),
+            _ => throw new Exception("Unreachable"),
+        };
+
+        Console.WriteLine($"Result: {string.Join(' ', result)}");
+    }
+
+    private static void Task6Advanced()
+    {
+        var action = ConsoleUtil.Request<int>(ValidateTask6Action, message: """
+        Select action:
+            1 - Union
+            2 - Intersection
+            3 - Difference
+        """);
+
+        Console.WriteLine("Input first set\n> ");
+        var a = ConsoleUtil.ReadArrayOneLine<int>();
+
+        Console.WriteLine("Input first set\n> ");
+        var b = ConsoleUtil.ReadArrayOneLine<int>();
+
+        var result = action switch
+        {
+            1 => a.Union(b),
+            2 => a.Intersect(b),
+            3 => a.Except(b),
+            _ => throw new Exception("Unreachable"),
+        };
+
+        Console.WriteLine($"Result: {string.Join(' ', result)}");
     }
 
     private static void Task7()
     {
+        var (n, m) = ConsoleUtil.Request(ReadPair, message: "Number of arrays", inline: true);
+        var a = new int[n][];
+
+        for (var i = 0; i < a.Length; ++i)
+        {
+            a[i] = ConsoleUtil.RequestArray(RandomIntAction());
+            BubbleSort(a[i]);
+        }
+
+        var sharedElements = a[0];
+
+        for (var i = 1; i < a.Length; i++)
+        {
+            sharedElements = Intersection(sharedElements, a[i]);
+        }
+
+        Console.WriteLine($"Shared elements: {string.Join(' ', sharedElements)}");
+    }
+
+    private static void Task7Advanced()
+    {
+        var (n, m) = ConsoleUtil.Request(ReadPair, message: "Number of arrays", inline: true);
+        var a = new int[n][];
+
+        for (var i = 0; i < a.Length; ++i)
+        {
+            a[i] = ConsoleUtil.RequestArray(RandomIntAction());
+        }
+
+        var sharedElements =
+            a[0]
+            .Where(elem => a.All(row => row.Contains(elem)))
+            .OrderBy(x => x);
+
+        Console.WriteLine($"Shared elements: {string.Join(' ', sharedElements)}");
     }
 
     private static void Task8()
     {
-    }
-
-    static void BubbleSort<T>(T[] items, Comparison<T> cmp)
-    {
-        for (var i = 0; i < items.Length; ++i)
-            for (var j = i + 1; j < items.Length; ++j)
-                if (cmp(items[i], items[j]) > 0)
-                    (items[j], items[i]) = (items[i], items[j]);
-    }
-
-    static void BubbleSort<T>(T[] items) where T : IComparable<T>
-    {
-        for (var i = 0; i < items.Length; ++i)
-            for (var j = i + 1; j < items.Length; ++j)
-                if (items[i].CompareTo(items[j]) > 0)
-                    (items[j], items[i]) = (items[i], items[j]);
     }
 }
